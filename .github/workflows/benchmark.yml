@@ -22,6 +22,9 @@ jobs:
         run: |
           ./setup.sh
           mkdir ${{ github.run_id }}
+          cp ./stats.yml ./${{ github.run_id }}/stats.yml
+          wget https://kevinaird.github.io/simple-stats/build/reports/list.csv
+          echo ${{ github.run_id }},influx-loadtest run ${{ github.run_id }} >> list.csv
           
       - name: Run Simple Stats
         run: docker run --name simple-stats -d -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/stats.yml:/app/stats.yml -v $(pwd)/${{ github.run_id }}:/output --network influx-loadtest_default kevinaird/simple-stats:1670708361 start /app/stats.yml
@@ -29,15 +32,20 @@ jobs:
       - name: Run JMeter
         run: docker run --name jmeter -i -v $(pwd):/app -w /app --network influx-loadtest_default justb4/jmeter -n -t /app/loadTest.jmx -l /app/${{ github.run_id }}/loadTest.jtl
         
+      - name: Generate JMeter Report from JTL
+        run: |
+          docker run --name jmeter-report -i -v $(pwd):/app -w /app justb4/jmeter -g /app/${{ github.run_id }}/loadTest.jtl -o /app/${{ github.run_id }}/loadTest
+          rm /app/${{ github.run_id }}/loadTest.jtl
+        
       - name: Dump Logs to Files
         if: always()
         run: |
-          docker logs simple-stats | head --bytes=-1048576 > ${{ github.run_id }}/simple-stats.log
-          docker logs jmeter | head --bytes=-1048576 > ${{ github.run_id }}/jmeter.log
-          docker logs influx | head --bytes=-1048576 > ${{ github.run_id }}/influx.log
-          docker logs kafka | head --bytes=-1048576 > ${{ github.run_id }}/kafka.log
-          docker logs vector | head --bytes=-1048576 > ${{ github.run_id }}/vector.log
-          docker logs kafka-rest | head --bytes=-1048576 > ${{ github.run_id }}/kafka-rest.log
+          docker logs simple-stats | head --bytes=-148576 > ${{ github.run_id }}/simple-stats.log
+          docker logs jmeter | head --bytes=-148576 > ${{ github.run_id }}/jmeter.log
+          docker logs influx | head --bytes=-148576 > ${{ github.run_id }}/influx.log
+          docker logs kafka | head --bytes=-148576 > ${{ github.run_id }}/kafka.log
+          docker logs vector | head --bytes=-148576 > ${{ github.run_id }}/vector.log
+          docker logs kafka-rest | head --bytes=-148576 > ${{ github.run_id }}/kafka-rest.log
 
       - name: Push Results 
         if: always()
@@ -51,3 +59,17 @@ jobs:
           user_email: 'kevinaird@gmail.com'
           user_name: 'kevinaird'
           commit_message: 'Pushing results to simple stats react app for viewing'
+
+      - name: Push List.csv 
+        if: always()
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: 'list.csv'
+          destination_repo: 'kevinaird/kevinaird.github.io'
+          destination_folder: 'simple-stats/build/reports'
+          user_email: 'kevinaird@gmail.com'
+          user_name: 'kevinaird'
+          commit_message: 'Pushing updated list.csv'
+        
