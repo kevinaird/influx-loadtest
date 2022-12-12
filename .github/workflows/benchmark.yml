@@ -1,0 +1,42 @@
+name: Benchmark Influx Stack
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Start containers
+        run: docker-compose -f "docker-compose.yml" up -d --build
+      
+      - name: Run pre-req setup script
+        run: |
+          ./setup.sh
+          mkdir ${{ github.run_id }}
+          
+      - name: Run Simple Stats
+        run: docker run --name simple-stats -d --rm -v /var/run/docker.sock:/var/run/docker.sock -v ${pwd}/stats.yml:/app/stats.yml -v ${pwd}/${{ github.run_id }}:/output --network influx4lre-stack_default kevinaird/simple-stats start /app/stats.yml
+
+      - name: Run JMeter
+        run: docker run --name jmeter -i --rm -v ${pwd}/:/app -w /app justb4/jmeter -n -t /app/loadTest.jmx -l /app/${{ github.run_id }}/loadTest.jtl
+        
+      - name: Push Results 
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: '${{ github.run_id }}'
+          destination_repo: 'kevinaird/kevinaird.github.io'
+          destination_folder: 'simple-stats/build/reports'
+          user_email: 'kevinaird@gmail.com'
+          user_name: 'kevinaird'
+          commit_message: 'Pushing results to simple stats react app for viewing'
