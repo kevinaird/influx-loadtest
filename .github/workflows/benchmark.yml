@@ -24,10 +24,10 @@ jobs:
           mkdir ${{ github.run_id }}
           
       - name: Run Simple Stats
-        run: docker run --name simple-stats -d --rm -v /var/run/docker.sock:/var/run/docker.sock -v ${pwd}/stats.yml:/app/stats.yml -v ${pwd}/${{ github.run_id }}:/output --network influx-loadtest_default kevinaird/simple-stats:1670708361 start /app/stats.yml
+        run: docker run --name simple-stats -d --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/stats.yml:/app/stats.yml -v $(pwd)/${{ github.run_id }}:/output --network influx-loadtest_default kevinaird/simple-stats:1670708361 start /app/stats.yml
 
       - name: Run JMeter
-        run: docker run --name jmeter -i --rm -v ${pwd}/:/app -w /app justb4/jmeter -n -t /app/loadTest.jmx -l /app/${{ github.run_id }}/loadTest.jtl
+        run: docker run --name jmeter -i --rm -v $(pwd):/app -w /app justb4/jmeter -n -t /app/loadTest.jmx -l /app/${{ github.run_id }}/loadTest.jtl
         
       - name: Push Results 
         uses: dmnemec/copy_file_to_another_repo_action@main
