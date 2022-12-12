@@ -32,12 +32,12 @@ jobs:
       - name: Dump Logs to Files
         if: always()
         run: |
-          docker logs simple-stats > ${{ github.run_id }}/simple-stats.log
-          docker logs jmeter > ${{ github.run_id }}/jmeter.log
-          docker logs influx > ${{ github.run_id }}/influx.log
-          docker logs kafka > ${{ github.run_id }}/kafka.log
-          docker logs vector > ${{ github.run_id }}/vector.log
-          docker logs kafka-rest > ${{ github.run_id }}/kafka-rest.log
+          docker logs simple-stats | head --bytes=-1048576 > ${{ github.run_id }}/simple-stats.log
+          docker logs jmeter | head --bytes=-1048576 > ${{ github.run_id }}/jmeter.log
+          docker logs influx | head --bytes=-1048576 > ${{ github.run_id }}/influx.log
+          docker logs kafka | head --bytes=-1048576 > ${{ github.run_id }}/kafka.log
+          docker logs vector | head --bytes=-1048576 > ${{ github.run_id }}/vector.log
+          docker logs kafka-rest | head --bytes=-1048576 > ${{ github.run_id }}/kafka-rest.log
 
       - name: Push Results 
         if: always()
