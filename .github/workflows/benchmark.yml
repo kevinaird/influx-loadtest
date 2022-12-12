@@ -29,7 +29,18 @@ jobs:
       - name: Run JMeter
         run: docker run --name jmeter -i --rm -v $(pwd):/app -w /app justb4/jmeter -n -t /app/loadTest.jmx -l /app/${{ github.run_id }}/loadTest.jtl
         
+      - name: Dump Logs to Files
+        if: always()
+        run: |
+          docker logs simple-stats > ${{ github.run_id }}/simple-stats.log
+          docker logs jmeter > ${{ github.run_id }}/jmeter.log
+          docker logs influx > ${{ github.run_id }}/influx.log
+          docker logs kafka > ${{ github.run_id }}/kafka.log
+          docker logs vector > ${{ github.run_id }}/vector.log
+          docker logs kafka-rest > ${{ github.run_id }}/kafka-rest.log
+
       - name: Push Results 
+        if: always()
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
