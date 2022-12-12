@@ -1,0 +1,48 @@
+[api]
+enabled = true
+
+# Retrieve messages from kafka in the "loadrunner" topic
+[sources.kafka]
+type = "kafka"
+bootstrap_servers = "kafka:9092"
+group_id = "vector2influx"
+key_field = "durationSample"
+topics = [ "^loadrunner$" ]
+
+# This will remove unnecesary quotes from the message
+[transforms.kafkaFormatted]
+type = "remap"
+inputs = [ "kafka" ]
+source = """
+. = parse_json!(.message)
+"""
+
+# Send messages to influxdb in the form of writes in batches every 10 sec
+[sinks.influx]
+type = "http"
+inputs = [ "kafkaFormatted" ]
+uri = "http://influx:8086/write?db=loadrunner"
+method = "post"
+compression = "none"
+buffer.type = "memory"
+buffer.max_events = 10000
+buffer.when_full = "block"
+batch.timeout_secs = 1
+framing.method = "newline_delimited"
+acknowledgements.enabled = true
+
+  [sinks.influx.encoding]
+  codec = "text"
+  only_fields = ["message"]
+
+# Also write to console for debugging purposes
+# Comment this section out for production usage
+# [sinks.console]
+# type = "console"
+# inputs = [ "kafkaFormatted" ]
+# target = "stdout"
+# framing.method = "newline_delimited"
+
+#   [sinks.console.encoding]
+#   codec = "text"
+#   only_fields = ["message"]
