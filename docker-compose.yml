@@ -100,21 +100,21 @@ services:
       KAFKA_REST_CLIENT_BOOTSTRAP_SERVERS: "kafka:9092"
 
   # Stat logger for getting performance metrics while the test
-  # is running
-  simple-stats:
-    image: kevinaird/simple-stats
-    hostname: simple-stats
-    container_name: simple-stats
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./stats.yml:/app/stats.yml
-      - ./output:/output
-    command: -v start /app/stats.yml
-    depends_on:
-      - influx
-      - kafka
-      - kafka-rest
-      - vector
+  # is running - THIS SHOULD ONLY BE USED DURING BENCHMARKING
+  # simple-stats:
+  #   image: kevinaird/simple-stats
+  #   hostname: simple-stats
+  #   container_name: simple-stats
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./stats.yml:/app/stats.yml
+  #     - ./output:/output
+  #   command: -v start /app/stats.yml
+  #   depends_on:
+  #     - influx
+  #     - kafka
+  #     - kafka-rest
+  #     - vector
 
 volumes:
   zookeeper_data:
