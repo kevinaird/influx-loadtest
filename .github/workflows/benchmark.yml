@@ -34,6 +34,7 @@ jobs:
         
       - name: Generate JMeter Report from JTL
         run: |
+          ls -l ./${{ github.run_id }}
           docker run --name jmeter-report -i -v $(pwd):/app -w /app justb4/jmeter -g /app/${{ github.run_id }}/loadTest.jtl -o /app/${{ github.run_id }}/loadTest
           rm /app/${{ github.run_id }}/loadTest.jtl
         
