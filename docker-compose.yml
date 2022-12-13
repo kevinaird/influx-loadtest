@@ -40,11 +40,11 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
-      - "9093:9093"
+      #- "9093:9093"
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote.port=9093 -Dcom.sun.management.jmxremote.rmi.port=9093 -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false
+      #- KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote.port=9093 -Dcom.sun.management.jmxremote.rmi.port=9093 -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false
     depends_on:
       - zookeeper
   
