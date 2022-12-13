@@ -1,5 +1,15 @@
 
 metrics:
+  # consume prometheus metrics from cadvisor
+  cadvisor:
+    type: exporter
+    endpoint: http://cadvisor:8080/metrics
+  
+  # consume prometheus metrics from kafka-exporter
+  kafka-exporter:
+    type: exporter
+    endpoint: http://kafka-exporter:9308/metrics
+  
   # kafka container stats - cpu, memory
   kafka-container-stats:
     type: container
@@ -38,5 +48,5 @@ metrics:
 
 # Write to a csv file
 output: /output/stats.csv
-interval: 5
+interval: 10
 continueOnError: false

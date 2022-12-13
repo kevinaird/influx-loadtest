@@ -1,0 +1,51 @@
+---
+version: '2'
+services:
+  # Custom stats puller
+  simple-stats:
+    image: kevinaird/simple-stats
+    hostname: simple-stats
+    container_name: simple-stats
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../stats.yml:/app/stats.yml
+      - ${SIMPLE_STATS_OUTPUT}:/output
+    command: start /app/stats.yml
+
+  # Container metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    hostname: cadvisor
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - 8083:8080
+
+  # jmx-exporter:
+  #   image: bitnami/jmx-exporter:latest
+  #   hostname: jmx-exporter
+  #   container_name: jmx-exporter
+  
+  kafka-exporter:
+    image: bitnami/kafka-exporter:latest
+    hostname: kafka-exporter
+    container_name: kafka-exporter
+    ports:
+      - 9308:9308
+    command: --kafka.server=kafka:9092
+
+
+  # influx-exporter:
+  #   image: quay.io/ricardbejarano/influxdb_exporter
+  #   hostname: influx-exporter
+  #   container_name: inflex-exporter
+
+networks:
+  default:
+    name: influx-loadtest_default
+    external: true

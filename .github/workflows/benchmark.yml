@@ -24,10 +24,16 @@ jobs:
           mkdir ${{ github.run_id }}
           cp ./stats.yml ./${{ github.run_id }}/stats.yml
           wget https://kevinaird.github.io/simple-stats/build/reports/list.csv
-          echo ${{ github.run_id }},influx-loadtest run ${{ github.run_id }} >> list.csv
+          echo ${{ github.run_id }},${GITHUB_REF##*/} run ${{ github.run_id }} >> list.csv
           
-      - name: Run Simple Stats
-        run: docker run --name simple-stats -d -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/stats.yml:/app/stats.yml -v $(pwd)/${{ github.run_id }}:/output --network influx-loadtest_default kevinaird/simple-stats:1670708361 start /app/stats.yml
+      #- name: Run Simple Stats
+      #  run: docker run --name simple-stats -d -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd)/stats.yml:/app/stats.yml -v $(pwd)/${{ github.run_id }}:/output --network influx-loadtest_default kevinaird/simple-stats:1670708361 start /app/stats.yml
+
+      - name: Run Monitoring Stack
+        run: |
+          export SIMPLE_STATS_OUTPUT=$(pwd)/${{ github.run_id }}
+          docker-compose -f "monitoring/docker-compose.yml" up -d
+          docker ps --all
 
       - name: Run JMeter
         run: docker run --name jmeter -i -v $(pwd):/app -w /app --network influx-loadtest_default justb4/jmeter -n -t /app/loadTest.jmx -l /app/${{ github.run_id }}/loadTest.jtl
