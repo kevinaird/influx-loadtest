@@ -13,7 +13,7 @@ services:
   influx-proxy:
     image: chengshiwen/influx-proxy:latest
     hostname: influx
-    contianer_name: influx-proxy
+    container_name: influx-proxy
     ports:
       - 8086:8086
     environment:
