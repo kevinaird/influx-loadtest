@@ -55,7 +55,7 @@ jobs:
         
       - name: Dump Logs to Files
         if: always()
-        run: ./cleanup.sh
+        run: ./cleanup.sh ${{ github.run_id }}
 
       - name: Push Results 
         if: always()
