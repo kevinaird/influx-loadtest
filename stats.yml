@@ -1,5 +1,9 @@
 
 metrics:
+  jmeter:
+    type: embed
+    href: loadTest
+  
   # consume prometheus metrics from cadvisor
   cadvisor:
     type: exporter
