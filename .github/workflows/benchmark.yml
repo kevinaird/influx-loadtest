@@ -2,9 +2,9 @@ name: Benchmark Influx Stack
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "influx-proxy" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "influx-proxy" ]
   workflow_dispatch:
 
 jobs:

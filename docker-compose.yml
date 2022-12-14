@@ -4,12 +4,22 @@ services:
   # timeseries database
   influx:
     image: influxdb:1.8-alpine
-    ports:
-      - 8086:8086
     volumes:
       - influx_data:/var/lib/influxdb
-    hostname: influx
+    hostname: influx-1
     container_name: influx
+
+  # proxy for influx that we can use to flush writes to influx on a fixed interval
+  influx-proxy:
+    image: chengshiwen/influx-proxy:latest
+    hostname: influx
+    contianer_name: influx-proxy
+    ports:
+      - 8086:8086
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - ./influx-proxy.json:/etc/influx-proxy/proxy.json
 
   # visualizer for the influx data
   grafana:
@@ -19,84 +29,10 @@ services:
     ports:
       - 3000:3000
     depends_on:
+      - influx-proxy
       - influx
 
-  # kafka configuration manager
-  zookeeper:
-    image: bitnami/zookeeper:3.8
-    hostname: zookeeper
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
-    volumes:
-      - "zookeeper_data:/bitnami"
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-    
-  # kafka messaging queue
-  kafka:
-    image: ubuntu/kafka:latest
-    hostname: kafka
-    container_name: kafka
-    ports:
-      - "9092:9092"
-      #- "9093:9093"
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      #- KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote.port=9093 -Dcom.sun.management.jmxremote.rmi.port=9093 -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false
-    depends_on:
-      - zookeeper
-  
-  # kafka web ui
-  kafka-ui:
-    image: provectuslabs/kafka-ui
-    container_name: kafka-ui
-    ports:
-      - "8080:8080"
-    restart: always
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-    depends_on:
-      - kafka
-
-  # vector for kafka to influx
-  vector:
-    image: timberio/vector:latest-alpine
-    hostname: vector
-    container_name: vector
-    command: -c /app/vector.toml
-    volumes:
-      - ./vector.toml:/app/vector.toml
-    working_dir: /app
-    ports:
-      - 8686:8686
-    environment:
-      - VECTOR_LOG=debug
-    depends_on:
-      - kafka
-      - influx
-
-  # http to kafka
-  kafka-rest:
-    image: confluentinc/cp-kafka-rest:7.3.0
-    ports:
-      - 8082:8082
-    hostname: kafka-rest
-    container_name: kafka-rest
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
-      KAFKA_REST_BOOTSTRAP_SERVERS: "kafka:9092"
-      KAFKA_REST_CLIENT_BOOTSTRAP_SERVERS: "kafka:9092"
 
 volumes:
-  zookeeper_data:
-    driver: local
-  kafka_data:
-    driver: local
   influx_data:
     driver: local

@@ -32,17 +32,16 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;records&quot;:[&#xd;
-{&quot;key&quot;:&quot;duration&quot;,&quot;value&quot;:&quot;transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano())}&quot;}]}</stringProp>
+                <stringProp name="Argument.value">transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano())}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">kafka-rest</stringProp>
-          <stringProp name="HTTPSampler.port">8082</stringProp>
+          <stringProp name="HTTPSampler.domain">influx</stringProp>
+          <stringProp name="HTTPSampler.port">8086</stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/topics/loadrunner</stringProp>
+          <stringProp name="HTTPSampler.path">/write?db=loadrunner</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

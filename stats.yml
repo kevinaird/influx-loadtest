@@ -9,27 +9,15 @@ metrics:
     type: exporter
     endpoint: http://cadvisor:8080/metrics
   
-  # consume prometheus metrics from kafka-exporter
-  kafka-exporter:
-    type: exporter
-    endpoint: http://kafka-exporter:9308/metrics
-  
-  # kafka container stats - cpu, memory
-  kafka-container-stats:
-    type: container
-    name: kafka
-
-  # kafka queue stats - how many messages?
-  kafka-topic-count:
-    type: kafka
-    topic: loadrunner
-    brokers:
-      - kafka:9092
-
   # influx container stats - cpu, memory
   influx-contianer-stats:
     type: container
     name: influx
+  
+  # influx container stats - cpu, memory
+  influx-proxy-contianer-stats:
+    type: container
+    name: influx-proxy
 
   # influx data stats - how many entries? i.e. SELECT COUNT(*) FROM transactions
   influx-record-count:
@@ -40,16 +28,6 @@ metrics:
     query: SELECT count(*) FROM transactions
     count: count_duration
     
-  # kafka-rest container stats - cpu, memory
-  kafka-rest-container-stats:
-    type: container
-    name: kafka-rest
-  
-  # vector container stats - cpu, memory
-  vector-container-stats:
-    type: container
-    name: vector
-
 # Write to a csv file
 output: /output/stats.csv
 interval: 10

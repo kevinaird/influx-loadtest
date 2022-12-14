@@ -26,25 +26,6 @@ services:
     ports:
       - 8083:8080
 
-  # jmx-exporter:
-  #   image: bitnami/jmx-exporter:latest
-  #   hostname: jmx-exporter
-  #   container_name: jmx-exporter
-  
-  kafka-exporter:
-    image: bitnami/kafka-exporter:latest
-    hostname: kafka-exporter
-    container_name: kafka-exporter
-    ports:
-      - 9308:9308
-    command: --kafka.server=kafka:9092
-
-
-  # influx-exporter:
-  #   image: quay.io/ricardbejarano/influxdb_exporter
-  #   hostname: influx-exporter
-  #   container_name: inflex-exporter
-
 networks:
   default:
     name: influx-loadtest_default
