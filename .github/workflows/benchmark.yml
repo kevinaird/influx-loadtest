@@ -2,9 +2,9 @@ name: Benchmark Influx Stack
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "kafka-influx" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "kafka-influx" ]
   workflow_dispatch:
 
 jobs:
