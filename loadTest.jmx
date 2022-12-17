@@ -70,7 +70,7 @@
             <intProp name="calcMode">0</intProp>
             <doubleProp>
               <name>throughput</name>
-              <value>60.0</value>
+              <value>4.0</value>
               <savedValue>0.0</savedValue>
             </doubleProp>
           </ConstantThroughputTimer>
