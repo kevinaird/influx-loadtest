@@ -32,7 +32,16 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano())}</stringProp>
+                <stringProp name="Argument.value">transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-10)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-9)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-8)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-7)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-6)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-5)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-4)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-3)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-2)}&#xd;
+transactions,lg=${__machineName},vuser=${__threadNum},transaction=${__samplerName()},scenario=0 duration=${__Random(0,10)},status=0 ${__BeanShell(java.time.Instant.now().getEpochSecond())}${__BeanShell(java.time.Instant.now().getNano()-1)}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -81,6 +90,13 @@
             <boolProp name="Assertion.assume_success">true</boolProp>
             <intProp name="Assertion.test_type">16</intProp>
           </ResponseAssertion>
+          <hashTree/>
+          <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="BeanShell PostProcessor" enabled="true">
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <boolProp name="resetInterpreter">false</boolProp>
+            <stringProp name="script">prev.setSuccessful(true)</stringProp>
+          </BeanShellPostProcessor>
           <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DirectToDebug" enabled="false">
